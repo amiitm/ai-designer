@@ -4,6 +4,7 @@ var express = require("express"),
   mongoose = require("mongoose"),
   cors = require("cors"),
   modelUtils = require("./src/model-utils");
+  generator = require("./src/layout-generator/layout-generator");
 
 // Models
 var componentsModel = require("./src/components-model/model");
@@ -45,6 +46,12 @@ app.get("/api/layout/:id", async (req, res) => {
   layout.findOne({ id: req.params.id }, (err, layout) => {
     res.send({ layout: layout });
   });
+});
+
+// to be removed
+app.post("/api/layout/generate", async (req, res) => {
+  const layout = generator.generateLayout();
+  res.send({ layout: layout });
 });
 
 app.post("/api/model/components/predict", async (req, res) => {
