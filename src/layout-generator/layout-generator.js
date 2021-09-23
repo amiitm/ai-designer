@@ -1,5 +1,13 @@
+var selectedFields = require("./mocks/fields");
+
 function generateLayout() {
-    return {}
+    const finalFields = [];
+    selectedFields.forEach((field) => {
+        if(!field.allowMany){
+            finalFields.push(field.accessPath)
+        }
+    })
+    return finalFields;
 }
 
 module.exports = {

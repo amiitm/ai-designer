@@ -76,7 +76,7 @@ app.post("/api/model/components/train", async (req, res) => {
     if (!componentsNNModel) {
       componentsNNModel = await componentsModel.loadModel(body.orgId);
     }
-    const trainConfig = {epochs: 500, batchSize: 32};
+    const trainConfig = {epochs: 1000, batchSize: 32};
     await componentsNNModel.train(trainConfig);
     await componentsModel.saveModel(body.orgId, componentsNNModel.getModelArtifacts());
     console.log("success");
