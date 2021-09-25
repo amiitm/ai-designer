@@ -45,7 +45,7 @@ async function getLayouts(characteristicsData, suggestionsCount = 5) {
         : suggestionsCount;
 
     const layoutsData = sortedLayouts
-      .map((sortedLayout) => JSON.stringify(sortedLayout.content))
+      .map((sortedLayout) => sortedLayout.content)
       .slice(0, sliceIndex);
 
     return layoutsData;
