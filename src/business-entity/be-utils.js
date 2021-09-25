@@ -22,7 +22,19 @@ function countUnique(arr) {
  };
 
 function getEntityData(selectedFields) {
-    const fieldTypeArr = selectedFields.map((field) => getFieldType(field));
+    const uniqueFields = [
+      ...Array.from(
+        new Set(
+          selectedFields.map((field) => {
+            if (field.split(".").length > 1) {
+              return `${field.split(".")[0]}.`;
+            }
+            return field;
+          })
+        )
+      ),
+    ];
+    const fieldTypeArr = uniqueFields.map((field) => getFieldType(field));
     const typeCount = countUnique(fieldTypeArr);
     const inputArr = [typeCount.rootfield || 0, typeCount.fieldgroup || 0, typeCount.smartfield || 0];
     return inputArr;

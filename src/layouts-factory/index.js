@@ -7,7 +7,7 @@ const characteristicsScores = {
     standard: 1,
     simple: 1.3,
     complex: 1.6,
-    component_based: 1.9,
+    component_based: 1.8,
     userPrefered: 2
 }
 

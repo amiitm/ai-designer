@@ -111,7 +111,7 @@ app.post("/api/model/characteristics/train", async (req, res) => {
     if (!characteristicsNNModel) {
       characteristicsNNModel = await characteristicsModel.loadModel(body.orgId);
     }
-    const trainConfig = {epochs: 1000, batchSize: 32};
+    const trainConfig = {epochs: 500, batchSize: 30};
     await characteristicsNNModel.train(trainConfig);
     await characteristicsModel.saveModel(body.orgId, characteristicsNNModel.getModelArtifacts());
     console.log("success");

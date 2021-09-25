@@ -1,10 +1,22 @@
 var tf = require("@tensorflow/tfjs");
 
-function getTestTrainingParams(trainingData, trainingLabels, splitRatio = 0.75, skipLabelsMatch = false) {
+function shuffleData(unshuffled) {
+    const shuffled = unshuffled
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+    return shuffled;
+  }
+
+function getTestTrainingParams(trainingData, trainingLabels, splitRatio = 0.75, skipLabelsMatch = false, shuffle = false) {
     const xData = [], yData = [];
     const xLabels = trainingLabels.xLabels;
     const yLabels = trainingLabels.yLabels;
-    trainingData.forEach((trainingDataMember) => {
+    let shuffledTrainingData = [...trainingData];
+    if (shuffle) {
+        shuffledTrainingData = shuffleData(trainingData);
+    }
+    shuffledTrainingData.forEach((trainingDataMember) => {
         let xTrainData = [...new Array(xLabels.length)].fill(0,0,xLabels.length);
         let yTrainData = [...new Array(yLabels.length)].fill(0,0,yLabels.length);
         if(!skipLabelsMatch) {
@@ -105,5 +117,6 @@ module.exports = {
     getOutputLabels: getOutputLabels,
     getCombinedTensor: getCombinedTensor,
     getInputData: getInputData,
-    getOutputData: getOutputData
+    getOutputData: getOutputData,
+    shuffleData: shuffleData
 }
