@@ -45,7 +45,9 @@ async function getLayouts(characteristicsData, suggestionsCount = 5) {
         : suggestionsCount;
 
     const layoutsData = sortedLayouts
-      .map((sortedLayout) => sortedLayout.content)
+      .map((sortedLayout) => {
+        return { id: sortedLayout.id, content: sortedLayout.content };
+      })
       .slice(0, sliceIndex);
 
     return layoutsData;
