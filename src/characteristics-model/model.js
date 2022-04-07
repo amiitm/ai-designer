@@ -18,7 +18,7 @@ async function getNewModel() {
       layers: [
         tf.layers.dense({inputDim: trainingLabels.xLabels.length, units: 32, activation: 'relu'}),
         tf.layers.dense({units: 16, activation: 'relu'}),
-        tf.layers.dense({units: trainingLabels.yLabels.length, activation: 'sigmoid'}),
+        tf.layers.dense({units: trainingLabels.yLabels.length, activation: 'softmax'}),
       ]
     });
   } catch(err) {
@@ -32,7 +32,7 @@ async function getTestTrainingData(orgId) {
     trainingLabels = await traininglabel.findOne({ modelType: "characteristics"});
   }
   trainingData = await trainingdata.find({ orgId: orgId, modelType: "characteristics"});
-  const testTrainingParams = modelUtils.getTestTrainingParams(trainingData, trainingLabels);
+  const testTrainingParams = modelUtils.getTestTrainingParams(trainingData, trainingLabels, 0.75, true, true);
   return testTrainingParams;
 }
 

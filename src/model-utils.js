@@ -1,26 +1,43 @@
 var tf = require("@tensorflow/tfjs");
 
-function getTestTrainingParams(trainingData, trainingLabels, splitRatio = 0.75) {
+function shuffleData(unshuffled) {
+    const shuffled = unshuffled
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+    return shuffled;
+  }
+
+function getTestTrainingParams(trainingData, trainingLabels, splitRatio = 0.75, skipLabelsMatch = false, shuffle = false) {
     const xData = [], yData = [];
     const xLabels = trainingLabels.xLabels;
     const yLabels = trainingLabels.yLabels;
-    trainingData.forEach((trainingDataMember) => {
+    let shuffledTrainingData = [...trainingData];
+    if (shuffle) {
+        shuffledTrainingData = shuffleData(trainingData);
+    }
+    shuffledTrainingData.forEach((trainingDataMember) => {
         let xTrainData = [...new Array(xLabels.length)].fill(0,0,xLabels.length);
         let yTrainData = [...new Array(yLabels.length)].fill(0,0,yLabels.length);
-        trainingDataMember.xData.forEach((xDataValue) => {
-            const index = xLabels.indexOf(xDataValue);
-            if(index!==-1) {
-                xTrainData[index] = 1;
-            }
-        });
-        trainingDataMember.yData.forEach((yDataValue) => {
-            const index = yLabels.indexOf(yDataValue);
-            if(index!==-1) {
-                yTrainData[index] = 1;
-            }
-        });
-        xData.push(xTrainData);
-        yData.push(yTrainData);
+        if(!skipLabelsMatch) {
+            trainingDataMember.xData.forEach((xDataValue) => {
+                const index = xLabels.indexOf(xDataValue);
+                if(index!==-1) {
+                    xTrainData[index] = 1;
+                }
+            });
+            trainingDataMember.yData.forEach((yDataValue) => {
+                const index = yLabels.indexOf(yDataValue);
+                if(index!==-1) {
+                    yTrainData[index] = 1;
+                }
+            });
+            xData.push(xTrainData);
+            yData.push(yTrainData);
+        } else {
+            xData.push(trainingDataMember.xData);
+            yData.push(trainingDataMember.yData);
+        }
     });
     const splitIndex = Math.floor(trainingData.length*splitRatio);
     const xTrain = xData.slice(0, splitIndex);
@@ -60,6 +77,16 @@ function getInputTensor(xLabels, xPred) {
     return tf.tensor(xData);
 }
 
+function getInputData(xLabels, xPred) {
+    let xPredData = [...new Array(xLabels.length)].fill(0,0,xLabels.length);
+    xPred.forEach((xPredLabel) => {
+        const index = xLabels.indexOf(xPredLabel);
+        if(index!==-1) {
+            xPredData[index] = 1;
+        }
+    });
+    return xPredData;
+}
 function getOutputLabels(ylabels, yPred, threshold = 0.5) {
     ypredLabels = [];
     yPred.forEach((yPredValue, index) => {
@@ -70,10 +97,26 @@ function getOutputLabels(ylabels, yPred, threshold = 0.5) {
     return ypredLabels;
 }
 
+function getOutputData(ylabels, yPred) {
+    const outputData = {};
+    yPred.forEach((yPredValue, index) => {
+        outputData[ylabels[index]] = yPredValue;
+    });
+    return outputData;
+}
+
+function getCombinedTensor(array1, array2) {
+    return tf.tensor([[...array1,...array2]]);
+}
+
 module.exports = {
     getTestTrainingParams: getTestTrainingParams,
     toArrayBuffer: toArrayBuffer,
     toBuffer: toBuffer,
     getInputTensor: getInputTensor,
-    getOutputLabels: getOutputLabels
+    getOutputLabels: getOutputLabels,
+    getCombinedTensor: getCombinedTensor,
+    getInputData: getInputData,
+    getOutputData: getOutputData,
+    shuffleData: shuffleData
 }

@@ -39,14 +39,13 @@ class genericNNModel {
         }
     }
 
-    async train() {
+    async train(trainConfig) {
         const artifactsArray = [];
         try {
             await this.model.fit(this.xTrain, this.yTrain, {
-                epochs: 100,
-                batchSize: 32,
+                epochs: trainConfig.epochs,
+                batchSize: trainConfig.batchSize,
                 validationData: [this.xTest, this.yTest],
-                shuffle: false
               });
             await this.model.save(tf.io.withSaveHandler(artifacts => {
                 artifactsArray.push(artifacts);

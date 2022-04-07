@@ -16,8 +16,8 @@ async function getNewModel() {
     trainingLabels = await traininglabel.findOne({ modelType: "components"});
     tfModel = tf.sequential({
       layers: [
-        tf.layers.dense({inputDim: trainingLabels.xLabels.length, units: 32, activation: 'relu'}),
-        tf.layers.dense({units: 16, activation: 'relu'}),
+        tf.layers.dense({inputDim: trainingLabels.xLabels.length, units: 64, activation: 'relu'}),
+        tf.layers.dense({units: 32, activation: 'relu'}),
         tf.layers.dense({units: trainingLabels.yLabels.length, activation: 'sigmoid'}),
       ]
     });
